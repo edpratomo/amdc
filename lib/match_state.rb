@@ -1,5 +1,4 @@
 require 'pp'
-require 'ostruct'
 
 class MatchState
   attr_reader :my_team
@@ -18,9 +17,9 @@ class MatchState
   end
 
   def run_checks(prev_ss, ss)
-    checks.inject(OpenStruct.new) do |m,o|
+    checks.inject({}) do |m,o|
       k, v = o.call(prev_ss.parsed, ss.parsed)
-      m.send("#{k}=", v) if k
+      m[k] = v if k
       m
     end
   end
@@ -117,7 +116,7 @@ class MatchInProgress < MatchState
         draw_score = new["boards"] / 2.0
         if old["teams"][my_team]["score"] <= draw_score and
            new["teams"][my_team]["score"] > draw_score
-          return "winning", "score required to win: #{draw_score + 0.5}"
+          return "winning", "#{draw_score + 0.5}" # score required to win
         end
       },
       lambda {|old,new|

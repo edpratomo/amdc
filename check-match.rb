@@ -4,7 +4,8 @@ require 'ostruct'
 require 'yaml'
 require 'pp'
 require 'optparse'
-require 'matchstate'
+require 'match_state'
+require 'diff_reader'
 
 class Match < ActiveRecord::Base
   has_many :snapshots
@@ -15,6 +16,7 @@ class Snapshot < ActiveRecord::Base
 
   after_initialize :init_state
   before_save :generate_diff
+  after_save DiffReader.new
 
   def previous
     @previous ||= Snapshot.where(match: match).where("created_at < NOW()").order(:created_at).last
@@ -40,7 +42,9 @@ class Snapshot < ActiveRecord::Base
 
   def generate_diff
     return true unless previous
-    self.diff = @state.run_checks(previous, self).to_json
+    hsh = @state.run_checks(previous, self)
+    # pp hsh
+    self.diff = JSON.pretty_generate(hsh)
   end
 end
 
