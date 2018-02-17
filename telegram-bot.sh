@@ -21,4 +21,6 @@ get_me() {
 }
 
 MSG_TEXT=$(cat)
-send_message
+if [ ! -z "$MSG_TEXT" ];then
+  send_message
+fi
