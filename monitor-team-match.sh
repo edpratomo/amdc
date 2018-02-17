@@ -7,4 +7,4 @@ if [ -z "$MATCH_ID" ]; then
   exit 1
 fi
 
-wget -O - "https://api.chess.com/pub/match/$MATCH_ID" | ruby -I. check-match.rb
+wget -nv -O - "https://api.chess.com/pub/match/$MATCH_ID" | bundle exec ruby -I. check-match.rb

@@ -78,7 +78,6 @@ class MatchInProgress < MatchState
       %w[played_as_white played_as_black].each do |color|
         if not e.has_key?(color) and my_team_players[board_num].has_key?(color)
           if my_team_players[board_num][color] == "win"
-            # puts "adding #{e["username"]}"
             add_recent_contributor(e["username"], 1)
           elsif my_team_players[board_num][color] == "timeout"
             add_recent_timeout(e["username"])
@@ -111,14 +110,13 @@ class MatchInProgress < MatchState
       },
       lambda {|old,new|
         draw_score = new["boards"] / 2.0
-        if old["teams"][my_team]["score"] != new["teams"][my_team]["score"] and
-           old["teams"][my_team]["score"] <= draw_score and
+        if old["teams"][my_team]["score"] <= draw_score and
            new["teams"][my_team]["score"] > draw_score
-          return "team's win", "total #{draw_score} boards"
+          return "winning", "score required to win: #{draw_score + 0.5}"
         end
       },
       lambda {|old,new|
-        if old["teams"][my_team]["score"] != new["teams"][my_team]["score"]
+        if compare_teams(old, new, "score")
           scan_players_results(old, new)
           unless recent_contributors.empty?
             return "contributors", recent_contributors.inject([]) {|m,o|
@@ -130,7 +128,7 @@ class MatchInProgress < MatchState
       },
       lambda {|old,new|
         unless recent_lost.empty?
-          return "lost games", recent_lost.inject([]) {|m,o|
+          return "lost_games", recent_lost.inject([]) {|m,o|
             m.push "#{o[0]} (#{o[1]} games)"
             m
           }.join(", ")
@@ -138,7 +136,7 @@ class MatchInProgress < MatchState
       },
       lambda {|old,new|
         unless recent_timeout.empty?
-          return "timeout games", recent_timeout.inject([]) {|m,o|
+          return "timeout_games", recent_timeout.inject([]) {|m,o|
             m.push "#{o[0]} (#{o[1]} games)"
             m
           }.join(", ")
