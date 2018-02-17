@@ -102,6 +102,11 @@ class MatchInProgress < MatchState
   def checks
     [
       lambda {|old,new|
+        if old["status"] == "registration"
+          return "match_started", "#{new["name"]} (#{Time.at(new["start_time"].to_i).to_datetime.strftime('%d %b %Y, %H:%M UTC%:z')})"
+        end
+      },
+      lambda {|old,new|
         if compare_teams(old, new, "score")
           return "score", 
             "#{new["teams"]["team1"]["name"]} vs #{new["teams"]["team2"]["name"]} : " +
