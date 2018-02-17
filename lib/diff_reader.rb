@@ -15,21 +15,21 @@ EOF
       [
         "contributors", proc {|val|
           <<"EOF"
-Ada tambahan poin dari #{val}.
+Ada tambahan poin dari #{val} \u{1F44D}
 EOF
         }
       ],
       [
         "lost_games", proc {|val|
           <<"EOF"
-Ada partai kalah: #{val}.
+Ada partai kalah: #{val} \u{1F614}
 EOF
         }
       ],
       [
         "lost_timeout", proc {|val|
           <<"EOF"
-Ada yang kalah jam: #{val}. Why?
+Ada yang kalah jam: #{val} \u{23F0} Why?
 EOF
         }
       ],
@@ -43,7 +43,7 @@ EOF
       [
         "winning", proc {|val|
           <<"EOF"
-udah pasti menang kita, karena skor minimum #{val}.
+Horee menang.. \u{1F389} (point minimum utk menang: #{val})
 EOF
         }
       ]
