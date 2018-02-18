@@ -43,7 +43,7 @@ class Snapshot < ActiveRecord::Base
   def generate_diff
     return true unless previous
     hsh = @state.run_checks(previous, self)
-    # pp hsh
+    throw(:abort) if hsh.empty?
     self.diff = JSON.pretty_generate(hsh)
   end
 end
