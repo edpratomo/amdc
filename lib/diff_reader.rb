@@ -51,7 +51,7 @@ EOF
   end
 
   def after_save(ss)
-    unless ss.diff.empty?
+    if ss.diff
       obj = JSON.parse(ss.diff)
       print translate(obj)
     end
