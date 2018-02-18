@@ -29,7 +29,12 @@ else
   end
   if last_ss.raw != raw
     ss = Snapshot.new(match: match, raw: raw)
-    ss.save!
-    $stderr.puts "[INFO] Saved new snapshot."
+    begin
+      ss.save!
+    rescue => err
+      $stderr.puts "[INFO] #{err} - #{err.class}"
+    else
+      $stderr.puts "[INFO] Saved new snapshot."
+    end
   end
 end
