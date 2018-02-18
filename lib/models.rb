@@ -39,11 +39,11 @@ class Snapshot < ActiveRecord::Base
 
   def generate_diff
     return true unless previous
-    diff = @state.run_checks(previous, self)
-    if diff.empty?
-      $stderr.puts "[INFO] Changes detected, but irrelevant." if diff.empty?
+    ss_diff = @state.run_checks(previous, self)
+    if ss_diff.empty?
+      $stderr.puts "[INFO] Changes detected, but irrelevant."
       throw(:abort, "irrelevant changes")
     end
-    self.diff = JSON.pretty_generate(diff)
+    self.diff = JSON.pretty_generate(ss_diff)
   end
 end
