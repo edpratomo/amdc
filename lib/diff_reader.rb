@@ -1,4 +1,5 @@
 require 'pp'
+require 'extension'
 
 class DiffReader
   def initialize
@@ -7,7 +8,7 @@ class DiffReader
         "match_started", proc {|val|
           <<"EOF"
 Bros... match baru start!
-#{val}
+#{val.escape_telegram_markdown}
 Enjoy the games dan jangan timeout ya!
 EOF
         }
@@ -15,28 +16,28 @@ EOF
       [
         "contributors", proc {|val|
           <<"EOF"
-Ada tambahan poin dari #{val} \u{1F44D}
+Ada tambahan poin dari #{val.escape_telegram_markdown} \u{1F44D}
 EOF
         }
       ],
       [
         "lost_games", proc {|val|
           <<"EOF"
-Ada partai kalah: #{val} \u{1F614}
+Ada partai kalah: #{val.escape_telegram_markdown} \u{1F614}
 EOF
         }
       ],
       [
         "lost_timeout", proc {|val|
           <<"EOF"
-Ada yang kalah jam: #{val} \u{23F0} Why?
+Ada yang kalah jam: #{val.escape_telegram_markdown} \u{23F0} Why?
 EOF
         }
       ],
       [
         "score", proc {|val|
           <<"EOF"
-Skor sekarang: #{val}.
+Skor sekarang: #{val.escape_telegram_markdown}.
 EOF
         }
       ],
