@@ -2,10 +2,11 @@ require 'models'
 require 'yaml'
 require 'pp'
 require 'optparse'
+require 'erb'
 
 rails_env = ENV['RAILS_ENV'] || 'development'
 
-cfg = YAML.load(File.read("db/config.yml"))
+cfg = YAML.load(ERB.new(File.read("db/config.yml")).result)
 MY_CLUB = JSON.parse(File.read("config.json"))["club"]
 
 ActiveRecord::Base.default_timezone = :local
