@@ -133,7 +133,7 @@ class MatchInProgress < MatchState
       lambda {|old,new|
         unless recent_lost.empty?
           return "lost_games", recent_lost.inject([]) {|m,o|
-            m.push "#{o[0]} (#{o[1]} games)"
+            m.push "#{o[0]} (#{o[1]} game)"
             m
           }.join(", ")
         end
@@ -141,7 +141,7 @@ class MatchInProgress < MatchState
       lambda {|old,new|
         unless recent_timeout.empty?
           return "timeout_games", recent_timeout.inject([]) {|m,o|
-            m.push "#{o[0]} (#{o[1]} games)"
+            m.push "#{o[0]} (#{o[1]} game)"
             m
           }.join(", ")
         end
