@@ -77,7 +77,4 @@ staging:
 #     url: <%= ENV['DATABASE_URL'] %>
 #
 production:
-  <<: *default
-  database: amdc_prod
-  username: amdc
-  password: <%= ENV['AMDC_DATABASE_PASSWORD'] %>
+  url: <%= ENV['DATABASE_URL'] %>
