@@ -27,8 +27,9 @@ class Snapshot < ActiveRecord::Base
   def init_state
     state_classes = {
       "registration" => MatchRegistration, 
-      "in_progress" => MatchInProgress,
-      "finished" => MatchFinished
+      "in_progress"  => MatchInProgress,
+      "finished"     => MatchFinished,
+      "closed"       => MatchRegistrationClosed,
     }
     @state = state_classes[parsed["status"]].new(my_team)
   end

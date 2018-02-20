@@ -5,6 +5,15 @@ class DiffReader
   def initialize
     @wordings = [
       [
+        "registration_closed", proc {|val|
+          /^(.+)\((\d+) boards\)/.match(val) do |md|
+          <<"EOF"
+Registrasi untuk *#{md[1].escape_telegram_markdown}* ditutup. Total #{md[2]} papan.
+EOF
+          end
+        }
+      ],
+      [
         "match_started", proc {|val|
           <<"EOF"
 Bros... match baru start!

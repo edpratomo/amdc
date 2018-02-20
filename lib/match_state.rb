@@ -19,7 +19,7 @@ class MatchState
   def run_checks(prev_ss, ss)
     checks.inject({}) do |m,o|
       k, v = o.call(prev_ss.parsed, ss.parsed)
-      m[k] = v if k
+      m[k] = v if (k and v)
       m
     end
   end
@@ -101,7 +101,7 @@ class MatchInProgress < MatchState
   def checks
     [
       lambda {|old,new|
-        if old["status"] == "registration"
+        if old["status"] == "registration" || old["status"] == "closed"
           return "match_started", "#{new["name"]} (#{Time.at(new["start_time"].to_i).to_datetime.strftime('%d %b %Y, %H:%M UTC%:z')})"
         end
       },
@@ -152,6 +152,18 @@ end
 
 class MatchRegistration < MatchState
 
+end
+
+class MatchRegistrationClosed < MatchState
+  def checks
+    [
+      lambda {|old,new|
+        if old["status"] == "registration"
+          return "registration_closed", "#{new['name']} (#{new['boards']} boards)"
+        end
+      }
+    ]
+  end
 end
 
 class MatchFinished < MatchInProgress; end
