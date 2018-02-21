@@ -53,7 +53,7 @@ EOF
       [
         "winning", proc {|val|
           <<"EOF"
-Horee menang.. \u{1F389} (point minimum utk menang: #{val})
+Horee menang.. \u{1F389} (poin minimum utk menang: #{val})
 EOF
         }
       ]

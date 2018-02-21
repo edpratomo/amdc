@@ -113,7 +113,7 @@ class MatchInProgress < MatchState
         end
       },
       lambda {|old,new|
-        draw_score = new["boards"] / 2.0
+        draw_score = new["boards"]
         if old["teams"][my_team]["score"] <= draw_score and
            new["teams"][my_team]["score"] > draw_score
           return "winning", "#{draw_score + 0.5}" # score required to win
