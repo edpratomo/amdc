@@ -35,15 +35,13 @@ def games_to_move_url(username)
   "https://api.chess.com/pub/player/#{username}/games/to-move"
 end
 
-def format_seconds time_taken
-  fmt = begin
-          if time_taken >= 3600
-            '%H jam %M menit'
-          else time_taken >= 60
-            '%M menit'
-          end
-        end
-  Time.at(time_taken).gmtime.strftime(fmt)
+def sec2hm(secs)
+  time = secs.round
+  time /= 60
+  mins = time % 60
+  time /= 60
+  hrs = time
+  [ hrs, mins ]
 end
 
 ######################
@@ -87,9 +85,6 @@ end
 
 VERBOSE = options.verbose
 
-#pp options.usernames
-#pp options.match_ids
-
 # only check 'basic' users
 usernames = options.usernames.select {|e| retrieve(player_url(e))["status"] == "basic"}
 
@@ -122,4 +117,14 @@ options.match_ids.each do |match_id|
   end
 end
 
-pp monitored_players
+# pp monitored_players
+
+monitored_players.each do |username, match|
+  match.each do |match_name, timelefts|
+    unless timelefts.empty?
+      timeleft = timelefts.sort.first
+      hour, min = sec2hm(timeleft)
+      puts "#{username}: #{hour} jam, #{min} menit di match: #{match_name}"
+    end
+  end
+end
