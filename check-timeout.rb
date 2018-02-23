@@ -92,6 +92,7 @@ monitored_players = {}
 
 options.match_ids.each do |match_id|
   match = retrieve(team_match_api_url(match_id))
+  next if match["status"] == "finished"
   %w[team1 team2].each do |team|
     players = match["teams"][team]["players"].
       reject {|e| e["played_as_white"] and e["played_as_black"]}.
@@ -122,7 +123,7 @@ end
 monitored_players.each do |username, match|
   match.each do |match_name, timelefts|
     unless timelefts.empty?
-      timeleft = timelefts.sort.first
+      timeleft = timelefts.sort.first # pick the shortest time left
       hour, min = sec2hm(timeleft)
       puts "#{username}: #{hour} jam, #{min} menit di match: #{match_name}"
     end
