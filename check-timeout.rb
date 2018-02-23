@@ -44,12 +44,10 @@ def sec2hm(secs)
   [ hrs, mins ]
 end
 
-def say_in_telegram(username, match, timeleft)
+def say_in_telegram(username, match, url, timeleft)
   hour, min = sec2hm(timeleft)
-  <<"EOF"
-WARNING! Bro *#{username.escape_telegram_markdown}* tinggal punya sisa waktu #{hour} jam #{min} menit 
-di match *#{match}*
-EOF
+  "Bro *#{username.escape_telegram_markdown}* tinggal punya sisa waktu #{hour} jam #{min} menit " +
+  "[#{match.escape_telegram_markdown}](#{url})\n"
 end
 
 ######################
@@ -117,7 +115,7 @@ monitored_players = options.match_ids.inject({}) do |m,match_id|
         unless delta_in_seconds > options.warn_threshold * 3600
           m[player["username"]] ||= {}
           m[player["username"]][match["name"]] = []
-          m[player["username"]][match["name"]].push(delta_in_seconds)
+          m[player["username"]][match["name"]].push([ game["url"], delta_in_seconds ])
         end
       end
     end
@@ -125,11 +123,15 @@ monitored_players = options.match_ids.inject({}) do |m,match_id|
   m
 end
 
-monitored_players.each do |username, match|
-  match.each do |match_name, timelefts|
-    unless timelefts.empty?
-      timeleft = timelefts.sort.first # pick the shortest time left
-      print say_in_telegram(username, match_name, timeleft)
+message = monitored_players.inject('') do |m,o|
+  username, match = o
+  match.each do |match_name, games|
+    unless games.empty?
+      game = games.sort_by(&:last).first # pick the shortest time left
+      m += say_in_telegram(username, match_name, game[0], game[1])
     end
   end
+  m
 end
+
+print 'TIMEOUT WARNING!! ' + message unless message.empty?

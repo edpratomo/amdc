@@ -12,7 +12,7 @@ fi
 send_message() {
   curl -X POST -H "Content-Type: application/x-www-form-urlencoded; charset=utf-8" \
     "https://api.telegram.org/bot${AMDC_BOT_TOKEN}/sendMessage" -d "parse_mode=Markdown" \
-    -d "chat_id=${AMDC_CHAT_ID}" \
+    -d "disable_web_page_preview=1" -d "chat_id=${AMDC_CHAT_ID}" \
     --data-urlencode "text=${MSG_TEXT}"
 }
 
