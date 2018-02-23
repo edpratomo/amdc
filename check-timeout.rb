@@ -88,34 +88,32 @@ VERBOSE = options.verbose
 # only check 'basic' users
 usernames = options.usernames.select {|e| retrieve(player_url(e))["status"] == "basic"}
 
-monitored_players = {}
-
-options.match_ids.each do |match_id|
+monitored_players = options.match_ids.inject({}) do |m,match_id|
   match = retrieve(team_match_api_url(match_id))
-  next if match["status"] == "finished"
+  next m if match["status"] == "finished"
   %w[team1 team2].each do |team|
     players = match["teams"][team]["players"].
       reject {|e| e["played_as_white"] and e["played_as_black"]}.
       select {|e| usernames.include?(e["username"])}.
-      reject {|e| monitored_players.has_key?(e["username"]) and monitored_players[e["username"]][match["name"]]}
+      reject {|e| m.has_key?(e["username"]) and m[e["username"]][match["name"]]}
     
     if VERBOSE
-      logger.info "players: #{players}"
+      logger.info "Match *#{match["name"]}* - players on #{team}: #{players}"
     end
 
     players.each do |player|
-      monitored_players[player["username"]] ||= {}
-      monitored_players[player["username"]][match["name"]] = []
-
       games_to_move(player).each do |game|
         now = Time.now.to_i
         delta_in_seconds = game["move_by"] - now
         unless delta_in_seconds > options.warn_threshold * 3600
-          monitored_players[player["username"]][match["name"]].push(delta_in_seconds)
+          m[player["username"]] ||= {}
+          m[player["username"]][match["name"]] = []
+          m[player["username"]][match["name"]].push(delta_in_seconds)
         end
       end
     end
   end
+  m
 end
 
 # pp monitored_players
