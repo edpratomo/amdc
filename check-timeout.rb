@@ -44,10 +44,18 @@ def sec2hm(secs)
   [ hrs, mins ]
 end
 
+def say_in_telegram(username, match, timeleft)
+  hour, min = sec2hm(timeleft)
+  <<"EOF"
+WARNING! Bro *#{username.escape_telegram_markdown}* tinggal punya sisa waktu #{hour} jam #{min} menit 
+di match *#{match}*
+EOF
+end
+
 ######################
 # main
 
-logger = Logger.new(STDOUT, Logger::DEBUG)
+logger = Logger.new(STDERR, Logger::DEBUG)
 options = OpenStruct.new
 
 OptionParser.new do |opts|
@@ -103,6 +111,7 @@ monitored_players = options.match_ids.inject({}) do |m,match_id|
 
     players.each do |player|
       games_to_move(player).each do |game|
+        next if game["move_by"] == 0
         now = Time.now.to_i
         delta_in_seconds = game["move_by"] - now
         unless delta_in_seconds > options.warn_threshold * 3600
@@ -116,14 +125,11 @@ monitored_players = options.match_ids.inject({}) do |m,match_id|
   m
 end
 
-# pp monitored_players
-
 monitored_players.each do |username, match|
   match.each do |match_name, timelefts|
     unless timelefts.empty?
       timeleft = timelefts.sort.first # pick the shortest time left
-      hour, min = sec2hm(timeleft)
-      puts "#{username}: #{hour} jam, #{min} menit di match: #{match_name}"
+      print say_in_telegram(username, match_name, timeleft)
     end
   end
 end
