@@ -10,8 +10,10 @@ if [ -f "$CONFIG_FILE" ];then
     echo "$desc"
     if [ "$RAILS_ENV" == "production" ];then
       . ./bin/monitor-team-match.sh $match_id | ./bin/telegram-bot.sh
+      . ./bin/monitor-timeout.sh $match_id | ./bin/telegram-bot.sh
     else
       . ./bin/monitor-team-match.sh $match_id 
+      . ./bin/monitor-timeout.sh $match_id
     fi
   done
 fi
