@@ -37,7 +37,7 @@ EOF
         }
       ],
       [
-        "lost_timeout", proc {|val|
+        "timeout_games", proc {|val|
           <<"EOF"
 Ada yang kalah jam: #{val.escape_telegram_markdown} \u{23F0} Why?
 EOF
