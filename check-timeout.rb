@@ -92,7 +92,8 @@ end
 VERBOSE = options.verbose
 
 # only check 'basic' users
-usernames = options.usernames.select {|e| retrieve(player_url(e))["status"] == "basic"}
+# usernames = options.usernames.select {|e| retrieve(player_url(e))["status"] == "basic"}
+usernames = options.usernames
 
 monitored_players = options.match_ids.inject({}) do |m,match_id|
   match = retrieve(team_match_api_url(match_id))
