@@ -105,7 +105,9 @@ monitored_players = options.match_ids.inject({}) do |m,match_id|
       reject {|e| m.has_key?(e["username"]) and m[e["username"]][match["name"]]}
     
     if VERBOSE
-      logger.info "Match *#{match["name"]}* - players on #{team}: #{players.map {|e| e["username"]}.sort.join(', ')}"
+      unless players.empty?
+        logger.info "Match *#{match["name"]}* - players on #{team}: #{players.map {|e| e["username"]}.sort.join(', ')}"
+      end
     end
 
     players.each do |player|
