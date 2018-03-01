@@ -97,7 +97,7 @@ usernames = options.usernames
 
 monitored_players = options.match_ids.inject({}) do |m,match_id|
   match = retrieve(team_match_api_url(match_id))
-  next m if match["status"] == "finished"
+  next m unless match["status"] == "in_progress"
   %w[team1 team2].each do |team|
     players = match["teams"][team]["players"].
       reject {|e| e["played_as_white"] and e["played_as_black"]}.
