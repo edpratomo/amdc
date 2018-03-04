@@ -1,1 +1,1 @@
-worker: bundle exec sidekiq -t 25 -c 1 -r ./lib/clock_worker.rb
+worker: bundle exec sidekiq -t 25 -c 3 -r ./lib/clock_worker.rb
