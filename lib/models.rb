@@ -3,6 +3,8 @@ require 'yaml'
 require 'pp'
 require 'match_state'
 require 'diff_reader'
+require 'clock_worker'
+require 'date'
 
 class Match < ActiveRecord::Base
   has_many :snapshots
@@ -39,7 +41,16 @@ class Snapshot < ActiveRecord::Base
   end
 
   def generate_diff
-    return true unless previous
+    unless previous
+      if @state.class == MatchRegistration
+        # schedule clock work
+        check_time = parsed["start_time"].to_i - 48 * 3600
+        human_datetime = Time.at(check_time).to_datetime.strftime('%d %b %Y, %H:%M UTC%:z')
+        $stderr.puts "[INFO] Scheduled for checking min players at #{human_datetime}"
+        ClockWorker.perform_at(check_time, match.source_id)
+      end
+      return true
+    end
     ss_diff = @state.run_checks(previous, self)
     if ss_diff.empty?
       $stderr.puts "[INFO] Changes detected, but irrelevant."
