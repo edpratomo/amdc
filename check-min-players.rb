@@ -17,10 +17,8 @@ opponent = (%w[team1 team2] - [my_team]).first
 
 if parsed["teams"][my_team]["players"].size < parsed["settings"]["min_team_players"].to_i
   delta = parsed["settings"]["min_team_players"].to_i - parsed["teams"][my_team]["players"].size
-  human_datetime = Time.at(parsed["start_time"]).to_datetime.strftime('%d %b %Y, %H:%M UTC%:z')
-  message =<<EOF
-Bros, kita masih kurang #{delta} pemain lagi untuk match melawan [#{parsed["url"]}](#{parsed["teams"][opponent]["name"].escape_telegram_markdown}),
-start tanggal #{human_datetime.escape_telegram_markdown}
-EOF
+  url_snippet = "[#{parsed["url"]}](#{parsed["teams"][opponent]["name"].escape_telegram_markdown})"
+  message = "Bros, kita masih kurang #{delta} pemain lagi untuk match melawan #{url_snippet}, " +
+            "start tanggal #{parsed["start_time"].human_datetime.escape_telegram_markdown}"
   print message
 end
