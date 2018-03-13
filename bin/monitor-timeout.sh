@@ -15,4 +15,4 @@ if [ -f "$CONFIG_FILE" ];then
   done
 fi
 
-echo "$USERS" | xargs bundle exec ruby -Ilib check-timeout.rb -m "$MATCH_ID" -v -w 6
+echo "$USERS" | xargs bundle exec ruby -Ilib check-timeout.rb -m "$MATCH_ID" -v -w 10
