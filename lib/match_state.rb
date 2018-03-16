@@ -1,4 +1,5 @@
 require 'pp'
+require 'helper'
 
 class MatchState
   attr_reader :my_team
@@ -27,9 +28,12 @@ end
 
 class MatchInProgress < MatchState
   attr_reader :recent_contributors, :recent_lost, :recent_timeout
+  attr_reader :recent_fairplay_violation, :recent_closed
 
   def initialize(my_team)
     @recent_lost = {}
+    @recent_fairplay_violation = {}
+    @recent_closed = {}
     @recent_timeout = {}
     @recent_contributors = {}
     super
@@ -38,6 +42,16 @@ class MatchInProgress < MatchState
   def add_recent_lost(username)
     @recent_lost[username] ||= 0
     @recent_lost[username] += 1
+  end
+
+  def add_recent_fairplay_violation(username)
+    @recent_fairplay_violation[username] ||= 0
+    @recent_fairplay_violation[username] += 1
+  end
+
+  def add_recent_closed(username)
+    @recent_closed[username] ||= 0
+    @recent_closed[username] += 1
   end
 
   def add_recent_timeout(username)
@@ -79,7 +93,14 @@ class MatchInProgress < MatchState
           if my_team_players[board_num][color] == "win"
             add_recent_contributor(e["username"], 1)
           elsif my_team_players[board_num][color] == "timeout"
-            add_recent_timeout(e["username"])
+            player_status = retrieve(player_url(e["username"]))["status"]
+            if player_status == "closed:fair_play_violations"
+              add_recent_fairplay_violation(e["username"])
+            elsif player_status == "closed"
+              add_recent_closed(e["username"])
+            else
+              add_recent_timeout(e["username"])
+            end
           else
             # check opponent result
             opponent_color = if color == 'played_as_white'
