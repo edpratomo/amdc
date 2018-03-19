@@ -2,6 +2,8 @@ require 'pp'
 require 'helper'
 
 class MatchState
+  include Helper
+
   attr_reader :my_team
 
   def initialize(my_team)

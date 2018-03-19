@@ -5,6 +5,8 @@ require 'extension'
 require 'logger'
 require 'helper'
 
+include Helper
+
 def sec2hm(secs)
   time = secs.round
   time /= 60
