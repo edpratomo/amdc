@@ -89,6 +89,7 @@ monitored_players = options.match_ids.inject({}) do |m,match_id|
         next if game["move_by"] == 0
         now = Time.now.to_i
         delta_in_seconds = game["move_by"] - now
+        next if delta_in_seconds < 0
         unless delta_in_seconds > options.warn_threshold * 3600
           m[player["username"]] ||= {}
           m[player["username"]][match["name"]] = []
